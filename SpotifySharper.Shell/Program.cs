@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using ES.ManagedInjector;
 using SharpNeedle;
+using SpotifySharper.Injector;
 using SpotifySharper.Lib;
 
 #if !ONLY_PID
@@ -22,31 +23,15 @@ namespace SpotifySharper.Shell
 {
     internal class Program
     {
-        private static Process SpotifyProcess
-        {
-            get
-            {
-                var processes = Process.GetProcessesByName("spotify");
-                var proc = processes.FirstOrDefault(process =>
-                {
-                    string cli = process.GetCommandLine();
-                    // Console.WriteLine($"ID: {process}\nCLI: {cli}");
-
-                    return cli.Contains("--type=renderer");
-                });
-                return proc;
-            }
-        }
-
         // donut -f loader.dll -c TestClass -m RunProcess -p notepad.exe
         private static void Main(string[] args)
         {
             //Console.WriteLine($"Is 64 bits?: {Is64Bit(processes[0]?.Handle)}");
 
-            int? pid = FindProcessId();
+            int? pid = Extensions.FindProcessId();
 
 #if SHARP_NEEDLE
-            PayloadInjector injector = new PayloadInjector(SpotifyProcess,
+            PayloadInjector injector = new PayloadInjector(Extensions.SpotifyProcess,
                 Environment.CurrentDirectory,
                 "SharpDomain.dll",
                 Environment.CurrentDirectory,
@@ -73,15 +58,9 @@ namespace SpotifySharper.Shell
             Console.Read();
         }
 
-        private static int? FindProcessId()
-        {
-            var proc = SpotifyProcess;
-            return proc?.Id;
-        }
-
         private static InjectionResult Inject(int pid)
         {
-            var injector = new Injector(pid, typeof(Main).Assembly);
+            var injector = new ES.ManagedInjector.Injector(pid, typeof(Main).Assembly);
             return injector.Inject();
         }
 

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySharper.Lib", "SpotifySharper.Lib\SpotifySharper.Lib.csproj", "{46DA227A-67EF-4728-9E46-CB0739752F0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySharper.Injector", "SpotifySharper.Injector\SpotifySharper.Injector.csproj", "{46DA227A-67EF-4728-9E46-CB0739752F0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySharper.Shell", "SpotifySharper.Shell\SpotifySharper.Shell.csproj", "{1D592C73-63D7-43C3-B457-C25AB631A712}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySharper.Lib", "SpotifySharper.Lib\SpotifySharper.Lib.csproj", "{D10C28E3-9810-4F4A-BF9E-275AF65525D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{1D592C73-63D7-43C3-B457-C25AB631A712}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D592C73-63D7-43C3-B457-C25AB631A712}.SharpNeedle-Tests|Any CPU.ActiveCfg = SharpNeedle-Tests|Any CPU
 		{1D592C73-63D7-43C3-B457-C25AB631A712}.SharpNeedle-Tests|Any CPU.Build.0 = SharpNeedle-Tests|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.Donut-Tests|Any CPU.ActiveCfg = Debug|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.Donut-Tests|Any CPU.Build.0 = Debug|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.SharpNeedle-Tests|Any CPU.ActiveCfg = Release|Any CPU
+		{D10C28E3-9810-4F4A-BF9E-275AF65525D1}.SharpNeedle-Tests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
