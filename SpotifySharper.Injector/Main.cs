@@ -10,13 +10,10 @@ namespace SpotifySharper.Injector
 
         [STAThread]
 #endif
-        public static int Run(string arg)
+        public static void Run()
         {
             Console.WriteLine("Hello world from the injected process!");
-
-            MessageBox.Show("C#/.Net dll payload example");
-            MessageBox.Show(arg);
-            return 0;
+            MessageBox.Show("Test");
         }
     }
 }
