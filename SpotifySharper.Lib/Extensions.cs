@@ -3,8 +3,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Management;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using Console = Colorful.Console;
 
 namespace SpotifySharper.Lib
 {
@@ -51,24 +54,22 @@ namespace SpotifySharper.Lib
 
         public static bool IsJson(string strInput)
         {
-            strInput = strInput.Trim();
-            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            if (IsBasicJson(strInput)) //For array
             {
                 try
                 {
-                    var obj = JToken.Parse(strInput);
+                    JToken.Parse(strInput);
                     return true;
                 }
                 catch (JsonReaderException jex)
                 {
                     //Exception in parsing json
-                    Console.WriteLine(jex.Message);
+                    Console.WriteLine(jex.Message, Color.Red);
                     return false;
                 }
                 catch (Exception ex) //some other exception
                 {
-                    Console.WriteLine(ex);
+                    Console.WriteLine(ex, Color.Red);
                     return false;
                 }
             }
@@ -76,6 +77,18 @@ namespace SpotifySharper.Lib
             {
                 return false;
             }
+        }
+
+        public static bool IsBasicJson(string strInput)
+        {
+            strInput = strInput.Trim();
+            return strInput.StartsWith("{") && strInput.EndsWith("}") || //For object
+                   strInput.StartsWith("[") && strInput.EndsWith("]");
+        }
+
+        public static string[] GetLines(this string input)
+        {
+            return Regex.Split(input, @"\r?\n|\r");
         }
 
         public static Color ToColor(this ConsoleColor color)

@@ -1,11 +1,13 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace SpotifySharper.Lib.Model
 {
+    [Serializable]
     public class ColoredMessage
     {
-        public Color Color { get; }
-        public string Message { get; }
+        public Color Color { get; set; }
+        public string Message { get; set; }
 
         private ColoredMessage()
         {

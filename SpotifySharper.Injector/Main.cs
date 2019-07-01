@@ -48,37 +48,6 @@ namespace SpotifySharper.Injector
             bool runForever = true;
             do
             {
-                // Client.Send(DateTime.Now.ToString());
-
-                //Console.Write("Command [q cls send auth]: ");
-                //string userInput = Console.ReadLine();
-                //if (string.IsNullOrEmpty(userInput)) continue;
-
-                //switch (userInput)
-                //{
-                //    case "q":
-                //        runForever = false;
-                //        break;
-
-                //    case "cls":
-                //        Console.Clear();
-                //        break;
-
-                //    case "send":
-                //        Console.Write("Data: ");
-                //        userInput = Console.ReadLine();
-                //        if (String.IsNullOrEmpty(userInput)) break;
-                //        client.Send(Encoding.UTF8.GetBytes(userInput));
-                //        break;
-
-                //    case "auth":
-                //        Console.Write("Preshared key: ");
-                //        userInput = Console.ReadLine();
-                //        if (String.IsNullOrEmpty(userInput)) break;
-                //        client.Authenticate(userInput);
-                //        break;
-                //}
-
                 if (ObjectQueue.Count > 0 && ObjectQueue.TryDequeue(out var @object))
                 {
                     if (@object is ColoredMessage)

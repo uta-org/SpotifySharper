@@ -6,6 +6,7 @@ using WatsonTcp;
 using static SpotifySharper.Lib.SpotifyConsts;
 
 using System.Drawing;
+using Colorful;
 using Newtonsoft.Json;
 using SpotifySharper.Lib.Model;
 using Console = Colorful.Console;
@@ -14,8 +15,6 @@ namespace SpotifySharper.Shell
 {
     internal class Program
     {
-        private static TypeAdviser m_CurrentAdviser;
-
         private static void Main(string[] args)
         {
             // Start Socket Server Initialization
@@ -53,47 +52,6 @@ namespace SpotifySharper.Shell
             Console.Read();
         }
 
-        //static void Main(string[] args)
-        //{
-        //    //bool runForever = true;
-        //    //while (runForever)
-        //    //{
-        //    //    Console.Write("Command [q cls list send]: ");
-        //    //    string userInput = Console.ReadLine();
-        //    //    if (String.IsNullOrEmpty(userInput)) continue;
-
-        //    //    List<string> clients;
-        //    //    string ipPort;
-
-        //    //    switch (userInput)
-        //    //    {
-        //    //        case "q":
-        //    //            runForever = false;
-        //    //            break;
-        //    //        case "cls":
-        //    //            Console.Clear();
-        //    //            break;
-        //    //        case "list":
-        //    //            clients = server.ListClients();
-        //    //            if (clients != null && clients.Count > 0)
-        //    //            {
-        //    //                Console.WriteLine("Clients");
-        //    //                foreach (string curr in clients) Console.WriteLine("  " + curr);
-        //    //            }
-        //    //            else Console.WriteLine("None");
-        //    //            break;
-        //    //        case "send":
-        //    //            Console.Write("IP:Port: ");
-        //    //            ipPort = Console.ReadLine();
-        //    //            Console.Write("Data: ");
-        //    //            userInput = Console.ReadLine();
-        //    //            if (String.IsNullOrEmpty(userInput)) break;
-        //    //            server.Send(ipPort, Encoding.UTF8.GetBytes(userInput));
-        //    //            break;
-        //    //    }
-        //    //}
-        //}
-
         private static bool ClientConnected(string ipPort)
         {
             Console.WriteLine("Client connected: " + ipPort);
@@ -113,41 +71,51 @@ namespace SpotifySharper.Shell
             if (data != null && data.Length > 0)
                 msg = Encoding.UTF8.GetString(data);
 
+            // Console.WriteLine(msg, Color.Aqua);
+
             object @object;
-            if (Extensions.IsJson(msg))
+            if (Extensions.IsBasicJson(msg))
             {
-                bool isAdviserDeserialized = false;
+                string[] lines = msg.GetLines();
+                TypeAdviser currentAdviser;
+
+                // Console.WriteLine($"Length: {lines.Length}");
+
+                string line0 = lines[0],
+                       line1 = lines[1];
+                if (!(lines.Length == 2 && Extensions.IsJson(line0) && Extensions.IsJson(line1)))
+                {
+                    Console.WriteLine($"Couldn't complete resolving advised type! (Line0: '{lines[0]}' || Line1: '{lines[1]}')", Color.Red);
+                    return false;
+                }
+
                 try
                 {
-                    m_CurrentAdviser = JsonConvert.DeserializeObject<TypeAdviser>(msg);
-                    isAdviserDeserialized = true;
-
-                    Console.WriteLine($"Deserialized adviser of type: '{m_CurrentAdviser.TypeName}'!", Color.Lime);
-                }
-                catch (Exception ex)
-                {
-                    // This isn't a TypeAdviser object instance
-                    // ... Ignore ...
-
-                    Console.WriteLine(ex, Color.Red);
-                }
-
-                if (m_CurrentAdviser != null && !isAdviserDeserialized)
-                {
-                    @object = JsonConvert.DeserializeObject(msg, m_CurrentAdviser.ResolveType());
+                    currentAdviser = JsonConvert.DeserializeObject<TypeAdviser>(line0);
+                    @object = JsonConvert.DeserializeObject(line1, currentAdviser.ResolveType());
 
                     if (@object is ColoredMessage)
                     {
+                        string caption = $"[Client #{ipPort}]: {{0}}";
                         var coloredMsg = @object as ColoredMessage;
-                        Console.WriteLine($"[Client #{ipPort}]: {coloredMsg.Message}", coloredMsg.Color);
+                        Console.WriteLineFormatted(caption, coloredMsg.Color, Console.ForegroundColor, coloredMsg.Message);
 
                         return true;
                     }
+
+                    Console.WriteLine($"Unsupported type: '{line1}' to deserialize!", Color.Red);
+                    return false;
+
+                    // Console.WriteLine($"Deserialized adviser of type: '{m_CurrentAdviser.TypeName}'!", Color.Lime);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex, Color.Red);
+                    return false;
                 }
             }
-            else
-                Console.WriteLine($"[Client #{ipPort}]: {msg}");
 
+            Console.WriteLine($"[Client #{ipPort}]: {msg}");
             return true;
         }
     }
