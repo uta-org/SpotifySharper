@@ -3,6 +3,7 @@
 //using System;
 //using System.Runtime.InteropServices;
 
+using System;
 using System.Diagnostics;
 using System.Linq;
 using ES.ManagedInjector;
@@ -10,14 +11,8 @@ using SharpNeedle;
 using SpotifySharper.Injector;
 using SpotifySharper.Lib;
 
-#if !ONLY_PID
 using System.Drawing;
 using Console = Colorful.Console;
-#else
-
-using System;
-
-#endif
 
 namespace SpotifySharper.Shell
 {
@@ -28,16 +23,26 @@ namespace SpotifySharper.Shell
         {
             //Console.WriteLine($"Is 64 bits?: {Is64Bit(processes[0]?.Handle)}");
 
-            int? pid = Extensions.FindProcessId();
+            // int? pid = Extensions.FindProcessId();
 
 #if SHARP_NEEDLE
-            PayloadInjector injector = new PayloadInjector(Extensions.SpotifyProcess,
+            var spotifyProcess = Extensions.SpotifyProcess;
+            PayloadInjector injector = new PayloadInjector(spotifyProcess,
                 Environment.CurrentDirectory,
                 "SharpDomain.dll",
                 Environment.CurrentDirectory,
-                "SpotifySharper.Lib.dll",
+                "SpotifySharper.Injector.dll",
                 string.Empty);
-            injector.InjectAndForget();
+
+            try
+            {
+                injector.InjectAndForget();
+                Console.WriteLine($"Successfully injected into Spotify (PID: {spotifyProcess?.Id} | Title: {spotifyProcess?.MainWindowTitle})", Color.LimeGreen);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex, Color.Red);
+            }
 #else
 #if !ONLY_PID
             if (pid.HasValue)

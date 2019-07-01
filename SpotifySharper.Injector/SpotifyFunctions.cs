@@ -33,7 +33,7 @@ namespace SpotifySharper.Injector
      */
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void CmdAddTextGAIA_t(int a1, int a2, string msg, int dummy, int dummy1, int dummy2, int dummy3);
+    public delegate void CmdAddTextGAIA_t(int a1, int a2, [MarshalAs(UnmanagedType.LPStr)] string msg, [MarshalAs(UnmanagedType.LPStr)] string dummy, int dummy1, int dummy2, int dummy3);
 
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     public delegate void CreateTrackPlayer_t(IntPtr a1, int a2, int a3, double speed, int a5, int a6, int flag, int a8, int a9);
@@ -46,22 +46,36 @@ namespace SpotifySharper.Injector
 
     public static class SpotifyFunctions
     {
-        public static CmdAddTextGAIA_t CmdAddTextGAIA
-            => GetFunc<CmdAddTextGAIA_t>(0x116B010);
+        static SpotifyFunctions()
+        {
+            if (CmdAddTextGAIA == default)
+                CmdAddTextGAIA = new IntPtr(0x116B010);
+        }
 
-        public static CreateTrackPlayer_t CreateTrackPlayer
+        public static IntPtr CmdAddTextGAIA;
+
+        //public static IntPtr CmdAddTextGAIA_Ptr
+        //    => _CmdAddTextGAIA = _CmdAddTextGAIA == default ? new IntPtr(0x116B010) : _CmdAddTextGAIA;
+
+        public static CmdAddTextGAIA_t CmdAddTextGAIA_Stub
+            => GetFunc<CmdAddTextGAIA_t>(CmdAddTextGAIA);
+
+        public static CreateTrackPlayer_t CreateTrackPlayer_Stub
             => GetFunc<CreateTrackPlayer_t>(0xD88A50);
 
-        public static OpenTrack_t OpenTrack
+        public static OpenTrack_t OpenTrack_Stub
             => GetFunc<OpenTrack_t>(0xD8B4F0);
 
-        public static CloseTrack_t CloseTrack
+        public static CloseTrack_t CloseTrack_Stub
             => GetFunc<CloseTrack_t>(0xD88390);
 
         public static T GetFunc<T>(long address)
             where T : Delegate // C# 7.3 :D
+            => GetFunc<T>(new IntPtr(address));
+
+        public static T GetFunc<T>(IntPtr ptr)
+            where T : Delegate // C# 7.3 :D
         {
-            var ptr = new IntPtr(address);
             return Marshal.GetDelegateForFunctionPointer<T>(ptr);
         }
     }

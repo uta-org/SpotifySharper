@@ -67,8 +67,9 @@
     <Reference Include="MemorySharp">
       <HintPath>..\tests\sharpneedle-tests\MemorySharp.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDomain">
-      <HintPath>..\tests\sharpneedle-tests\SharpDomain.dll</HintPath>
+    <Reference Include="SharpDomain, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharpNeedle\SharpNeedle\bin\Debug\SharpDomain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

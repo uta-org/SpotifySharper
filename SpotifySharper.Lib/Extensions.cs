@@ -6,10 +6,15 @@ namespace SpotifySharper.Lib
 {
     public static class Extensions
     {
+        private static Process _spotifyProcess;
+
         public static Process SpotifyProcess
         {
             get
             {
+                if (_spotifyProcess != null)
+                    return _spotifyProcess;
+
                 var processes = Process.GetProcessesByName("spotify");
                 var proc = processes.FirstOrDefault(process =>
                 {
@@ -19,7 +24,9 @@ namespace SpotifySharper.Lib
                     // Return the one that doesn't not contain any arguments
                     return !cli.Contains("--");
                 });
-                return proc;
+
+                _spotifyProcess = proc;
+                return _spotifyProcess;
             }
         }
 
