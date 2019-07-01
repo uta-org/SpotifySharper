@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using DetoursNet;
-using SpotifySharper.Injector.ThirdParty.DetoursNet;
-using static SpotifySharper.Injector.SpotifyFunctions;
+using static SpotifySharper.Injector.Tools.SpotifyFunctions;
 
-namespace SpotifySharper.Injector
+namespace SpotifySharper.Injector.Tools
 {
+    using ThirdParty.DetoursNet;
+    using Utils;
+
     public class SpotifyPatchAds
     {
         /*
@@ -131,14 +132,14 @@ namespace SpotifySharper.Injector
 
             if (fmt.Substring(4, 8) == "track_uri")
             {
-                Console.WriteLine($"Track: {fmt}");
+                Main.SendMessage($"Track: {fmt}");
                 MessageBox.Show($"Testing FMT: {fmt}");
 
                 if (dummy.Substring(0, 9) == "spotify:ad")
                 {
                     // dummy[0] == char(115) && dummy[1] == char(112) && dummy[2] == char(111) && dummy[3] == char(116) && dummy[4] == char(105) && dummy[5] == char(102) && dummy[6] == char(121) && dummy[7] == char(58) && dummy[8] == char(97) && dummy[9] == char(100)
 
-                    Console.WriteLine($"Skipping AD: {dummy}");
+                    Main.SendMessage($"Skipping AD: {dummy}");
                     trackPosition = 100000; // just in case an ad is 100 sec long lol
                 }
                 else
@@ -151,6 +152,8 @@ namespace SpotifySharper.Injector
         //detect ads
         private static void SpotifyTrackAds()
         {
+            Main.SendMessage("Tracking ads!");
+
             using (var handleProvider = new GCHandleProvider(new CmdAddTextGAIA_t(CmdAddTextGAIA_hk)))
             {
                 DetoursLoader.DetourTransactionBegin();

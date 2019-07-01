@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SpotifySharper.Injector
+namespace SpotifySharper.Injector.Tools
 {
     /*
      *
