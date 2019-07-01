@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
+using SpotifySharper.Injector.Tools;
 using WatsonTcp;
 using static SpotifySharper.Lib.SpotifyConsts;
 
@@ -19,22 +21,18 @@ namespace SpotifySharper.Injector
         [STAThread]
         public static void Run()
         {
+            // Init queue
             ObjectQueue = new ConcurrentQueue<object>();
 
-            //Console.WriteLine("Hello world from the injected process!");
-            // MessageBox.Show("Test");
+            // Start job
+            Task.Factory.StartNew(SpotifyPatchAds.PatchAds);
 
-            // SpotifyPatchAds.PatchAds();
-
-            // Task.Factory.StartNew(InitSocketClient);
-
+            // Start socket
             InitSocketClient();
         }
 
         private static void InitSocketClient()
         {
-            // MessageBox.Show("Test");
-
             WatsonTcpClient client = new WatsonTcpClient(SERVER, Port)
             {
                 ServerConnected = ServerConnected,

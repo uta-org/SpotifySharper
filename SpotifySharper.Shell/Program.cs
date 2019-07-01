@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using SharpNeedle;
 using SpotifySharper.Lib;
 using System.Text;
@@ -6,13 +7,12 @@ using WatsonTcp;
 using static SpotifySharper.Lib.SpotifyConsts;
 
 using System.Drawing;
-using Colorful;
-using Newtonsoft.Json;
-using SpotifySharper.Lib.Model;
 using Console = Colorful.Console;
 
 namespace SpotifySharper.Shell
 {
+    using Lib.Model;
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -71,15 +71,11 @@ namespace SpotifySharper.Shell
             if (data != null && data.Length > 0)
                 msg = Encoding.UTF8.GetString(data);
 
-            // Console.WriteLine(msg, Color.Aqua);
-
             object @object;
             if (Extensions.IsBasicJson(msg))
             {
                 string[] lines = msg.GetLines();
                 TypeAdviser currentAdviser;
-
-                // Console.WriteLine($"Length: {lines.Length}");
 
                 string line0 = lines[0],
                        line1 = lines[1];
@@ -105,8 +101,6 @@ namespace SpotifySharper.Shell
 
                     Console.WriteLine($"Unsupported type: '{line1}' to deserialize!", Color.Red);
                     return false;
-
-                    // Console.WriteLine($"Deserialized adviser of type: '{m_CurrentAdviser.TypeName}'!", Color.Lime);
                 }
                 catch (Exception ex)
                 {
