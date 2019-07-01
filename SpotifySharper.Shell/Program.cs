@@ -1,7 +1,5 @@
 ﻿using System;
-using ES.ManagedInjector;
 using SharpNeedle;
-using SpotifySharper.Injector;
 using SpotifySharper.Lib;
 
 using System.Drawing;
@@ -34,12 +32,6 @@ namespace SpotifySharper.Shell
             // Injection End
 
             Console.Read();
-        }
-
-        private static InjectionResult Inject(int pid)
-        {
-            var injector = new ES.ManagedInjector.Injector(pid, typeof(Main).Assembly);
-            return injector.Inject();
         }
     }
 }

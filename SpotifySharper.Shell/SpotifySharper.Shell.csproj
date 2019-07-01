@@ -61,9 +61,6 @@
     <Reference Include="Colorful.Console, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Colorful.Console.1.2.9\lib\net461\Colorful.Console.dll</HintPath>
     </Reference>
-    <Reference Include="ES.ManagedInjector">
-      <HintPath>..\libs\ES.ManagedInjector.dll</HintPath>
-    </Reference>
     <Reference Include="MemorySharp">
       <HintPath>..\tests\sharpneedle-tests\MemorySharp.dll</HintPath>
     </Reference>
