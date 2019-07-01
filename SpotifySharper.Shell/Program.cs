@@ -1,11 +1,4 @@
-﻿#define ONLY_PID
-
-//using System;
-//using System.Runtime.InteropServices;
-
-using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System;
 using ES.ManagedInjector;
 using SharpNeedle;
 using SpotifySharper.Injector;
@@ -18,14 +11,9 @@ namespace SpotifySharper.Shell
 {
     internal class Program
     {
-        // donut -f loader.dll -c TestClass -m RunProcess -p notepad.exe
         private static void Main(string[] args)
         {
-            //Console.WriteLine($"Is 64 bits?: {Is64Bit(processes[0]?.Handle)}");
-
-            // int? pid = Extensions.FindProcessId();
-
-#if SHARP_NEEDLE
+            // Injection Begin
             var spotifyProcess = Extensions.SpotifyProcess;
             PayloadInjector injector = new PayloadInjector(spotifyProcess,
                 Environment.CurrentDirectory,
@@ -43,23 +31,8 @@ namespace SpotifySharper.Shell
             {
                 Console.WriteLine(ex, Color.Red);
             }
-#else
-#if !ONLY_PID
-            if (pid.HasValue)
-            {
-                InjectionResult result = Inject(pid.Value);
-                Console.WriteLine($"Injection Result: {result}");
-            }
-            else
-            {
-                Console.WriteLine($"Couldn't find any Spotify process opened!", Color.Red);
-            }
-#else
-            Console.WriteLine($"Spotify ID: {(pid.HasValue ? pid.Value.ToString() : "NULL")}");
-#endif
-#endif
+            // Injection End
 
-            // Console.WriteLine($"Spotify ID: {FindProcessId()}");
             Console.Read();
         }
 
@@ -68,22 +41,5 @@ namespace SpotifySharper.Shell
             var injector = new ES.ManagedInjector.Injector(pid, typeof(Main).Assembly);
             return injector.Inject();
         }
-
-        //[DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //public static extern bool IsWow64Process([In] IntPtr hProcess, [Out] out bool lpSystemInfo);
-
-        //public static bool Is64Bit(IntPtr? processHandle)
-        //{
-        //    if (!processHandle.HasValue)
-        //        return false;
-
-        //    bool retVal;
-
-        //    // Process.GetCurrentProcess().Handle
-        //    IsWow64Process(processHandle.Value, out retVal);
-
-        //    return retVal;
-        //}
     }
 }
