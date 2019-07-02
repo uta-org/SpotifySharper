@@ -76,9 +76,10 @@ namespace SpotifySharper.Injector
             => SendMessage(msg, Console.ForegroundColor.ToColor());
 
         public static void SendMessage(string msg, Color color)
-        {
-            ObjectQueue.Enqueue(new ColoredMessage(color, msg));
-        }
+            => ObjectQueue.Enqueue(new ColoredMessage(color, msg));
+
+        public static void SendMessage(object obj, Color color)
+            => SendMessage(obj.ToString(), color);
 
         private static bool ServerDisconnected()
         {

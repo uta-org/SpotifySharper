@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicInject.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Model\TypeAdviser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

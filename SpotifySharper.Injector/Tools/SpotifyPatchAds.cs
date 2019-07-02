@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static SpotifySharper.Injector.Tools.SpotifyFunctions;
@@ -106,13 +107,13 @@ namespace SpotifySharper.Injector.Tools
         private IntPtr CreateTrack_Ptr;
 
         //OpenTrack
-        private int OpenTrack_a2Field,
-                    OpenTrack_a3Field,
-                    OpenTrack_a5Field,
-                    OpenTrack_a6Field;
+        private static int OpenTrack_a2Field,
+                           OpenTrack_a3Field,
+                           OpenTrack_a5Field,
+                           OpenTrack_a6Field;
 
-        private static long trackPosition = 0;
-        private IntPtr OpenTrack_Ptr;
+        private static long trackPosition;
+        private static IntPtr OpenTrack_Ptr;
 
         private long CmdAddText_back = 0x116B01A;
 
@@ -129,6 +130,8 @@ namespace SpotifySharper.Injector.Tools
         {
             //check if current track is an ad or not
             // fmt[4] == char(116) && fmt[5] == char(114) && fmt[6] == char(97) && fmt[7] == char(99) && fmt[8] == char(107) && fmt[9] == char(95) && fmt[10] == char(117) && fmt[11] == char(114) && fmt[12] == char(105)
+
+            Main.SendMessage($"A1: {a1} || A2: {a2} || FMT: {fmt} || Dummy: {dummy} || Dummy1: {dummy1} || Dummy2: {dummy2} || Dummy3: {dummy3}");
 
             if (fmt.Substring(4, 8) == "track_uri")
             {
@@ -149,6 +152,20 @@ namespace SpotifySharper.Injector.Tools
             CmdAddTextGAIA_Stub(a1, a2, fmt, dummy, dummy1, dummy2, dummy3);
         }
 
+        private static void OpenTrack_hk(IntPtr _this, uint edx, int a2, int a3, long position, int a5, int a6)
+        {
+            Main.SendMessage("Opening track");
+
+            OpenTrack_Ptr = _this;
+            OpenTrack_a2Field = a2;
+            OpenTrack_a3Field = a3;
+            position = trackPosition;
+            OpenTrack_a5Field = a5;
+            OpenTrack_a6Field = a6;
+
+            OpenTrack_Stub(OpenTrack_Ptr, edx, OpenTrack_a2Field, OpenTrack_a3Field, position, OpenTrack_a5Field, OpenTrack_a6Field);
+        }
+
         //detect ads
         private static void SpotifyTrackAds()
         {
@@ -166,10 +183,15 @@ namespace SpotifySharper.Injector.Tools
         //open new song
         private static void SpotifyOpenTrack()
         {
-            //DetoursLoader.DetourTransactionBegin();
-            //DetoursLoader.DetourUpdateThread();
-            //DetoursLoader.DetourAttach(ref OpenTrack, OpenTrack_hk);
-            //DetoursLoader.DetourTransactionCommit();
+            Main.SendMessage("Executing open track detours!");
+
+            using (var handleProvider = new GCHandleProvider(new OpenTrack_t(OpenTrack_hk)))
+            {
+                DetoursLoader.DetourTransactionBegin();
+                DetoursLoader.DetourUpdateThread();
+                DetoursLoader.DetourAttach(ref OpenTrack, handleProvider.Pointer);
+                DetoursLoader.DetourTransactionCommit();
+            }
         }
 
         //close song
@@ -192,10 +214,19 @@ namespace SpotifySharper.Injector.Tools
 
         public static void PatchAds()
         {
-            SpotifyTrackAds();
-            SpotifyOpenTrack();
-            SpotifyCloseTrack();
-            SpotifyCreateTrack();
+            Init();
+
+            try
+            {
+                SpotifyTrackAds();
+                SpotifyOpenTrack();
+                SpotifyCloseTrack();
+                SpotifyCreateTrack();
+            }
+            catch (Exception ex)
+            {
+                Main.SendMessage(ex, Color.Red);
+            }
         }
     }
 }

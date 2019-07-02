@@ -38,21 +38,24 @@ namespace SpotifySharper.Injector.Tools
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     public delegate void CreateTrackPlayer_t(IntPtr a1, int a2, int a3, double speed, int a5, int a6, int flag, int a8, int a9);
 
-    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-    public delegate void OpenTrack_t(IntPtr _this, int a2, int a3, long position, int a5, int a6);
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall | CallingConvention.FastCall)]
+    public delegate void OpenTrack_t(IntPtr _this, uint edx, int a2, int a3, long position, int a5, int a6);
 
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     public delegate void CloseTrack_t(IntPtr _this, int a2, int a3, int a4);
 
     public static class SpotifyFunctions
     {
-        static SpotifyFunctions()
+        public static void Init()
         {
-            if (CmdAddTextGAIA == default)
-                CmdAddTextGAIA = new IntPtr(0x116B010);
+            Main.SendMessage("Setting pointers!");
+
+            CmdAddTextGAIA = new IntPtr(0x116B010);
+            OpenTrack = new IntPtr(0xD8B4F0);
         }
 
         public static IntPtr CmdAddTextGAIA;
+        public static IntPtr OpenTrack;
 
         //public static IntPtr CmdAddTextGAIA_Ptr
         //    => _CmdAddTextGAIA = _CmdAddTextGAIA == default ? new IntPtr(0x116B010) : _CmdAddTextGAIA;

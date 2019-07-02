@@ -31,17 +31,27 @@ namespace SpotifySharper.Shell
 
             // Injection Begin
             var spotifyProcess = Extensions.SpotifyProcess;
-            PayloadInjector injector = new PayloadInjector(spotifyProcess,
+            PayloadInjector sharpDomainInjector = new PayloadInjector(spotifyProcess,
                 Environment.CurrentDirectory,
                 "SharpDomain.dll",
                 Environment.CurrentDirectory,
                 "SpotifySharper.Injector.dll",
                 string.Empty);
 
+            //PayloadInjector detoursInjector = new PayloadInjector(spotifyProcess,
+            //    Environment.CurrentDirectory,
+            //    "SharpDomain.dll",
+            //    Environment.CurrentDirectory,
+            //    "DetoursDll.dll",
+            //    string.Empty);
+
+            spotifyProcess.Inject("DetoursDll.dll");
+
             try
             {
-                injector.InjectAndForget();
-                Console.WriteLine($"Successfully injected into Spotify (PID: {spotifyProcess?.Id} | Title: {spotifyProcess?.MainWindowTitle})!", Color.Lime);
+                sharpDomainInjector.InjectAndForget();
+
+                Console.WriteLine($"Successfully injected libs into Spotify (PID: {spotifyProcess?.Id} | Title: {spotifyProcess?.MainWindowTitle})!", Color.Lime);
             }
             catch (Exception ex)
             {
